@@ -1,0 +1,14 @@
+#
+# These files aren't fully sent to the client because they
+# should never change. Instead we send the CRC of this file
+# so the client can load their version - and we know it's kewl.
+#
+
+gamemodes\hexz\gamemode\cl_hints.lua
+gamemodes\hexz\gamemode\cl_init.lua
+gamemodes\hexz\gamemode\cl_notice.lua
+gamemodes\hexz\gamemode\cl_search_models.lua
+gamemodes\hexz\gamemode\cl_spawnmenu.lua
+gamemodes\hexz\gamemode\cl_worldtips.lua
+
+gamemodes\hexz\gamemode\shared_hexz_custom.lua
