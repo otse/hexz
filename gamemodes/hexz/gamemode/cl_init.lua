@@ -5,6 +5,8 @@
 
 -----------------------------------------------------------]]
 
+local HexZ = {}
+
 include( 'shared.lua' )
 include( 'cl_notice.lua' )
 include( 'cl_hints.lua' )
@@ -13,6 +15,7 @@ include( 'cl_worldtips.lua' )
 include( "shared_hexz_custom.lua" )
 
 DEFINE_BASECLASS( "gamemode_base" )
+
 
 
 function GM:Initialize()
@@ -54,27 +57,50 @@ function GM:UnfrozeObjects( num )
 
 end
 
-function GM:HexZDist( point )
+function HexZ:DistPly( point )
 	local ply = LocalPlayer()
 	if ( !IsValid( ply ) ) then return 300.0 end
 
-	local view = ply:GetViewEntity()
-	local dist = 256
+	return ply:GetPos():Distance( point )
 
+end
+
+function HexZ:BeingLookedAtByLocalPlayer()
+
+	local ply = LocalPlayer()
+	if ( !IsValid( ply ) ) then return false end
+
+	local view = ply:GetViewEntity()
+	local dist = self.MaxWorldTipDistance
 	dist = dist * dist
 
 	local pos = view:GetPos()
 
-	return pos:DistToSqr( self:GetPos() )
+	if ( pos:DistToSqr( self:GetPos() ) <= dist ) then
+		return util.TraceLine( {
+			start = pos,
+			endpos = pos + ( view:GetAngles():Forward() * dist ),
+			filter = view
+		} ).Entity == self
+	end
 
+	return false
 end
 
-function HexZFindTips()
+function HexZ:FindObjects()
 
 	--[[
 	electricity box
 	]]--
-	local nearby = GM.HexZDist(Vector( 135, 194, 34 )) <= 256
+	local electricity_box = {}
+	electricity_box.text = "electricity box"
+	electricity_box.vec = Vector( 135, 194, 34 )
+	
+	local nearby = HexZ:DistPly( electricity_box.vec )
+
+	if nearby <= 100 then 
+		AddWorldTip( nil, "Electric Box", 1.5, electricity_box.vec, nil )
+	end
 
 	--if (GM.HexZDist(Vector( 135, 194, 34 )) <= 256 ) then
 --		AddWorldTip( nil, "Electric Box", 1.5, Vector( 135, 194, 34 ), nil )
@@ -82,9 +108,11 @@ function HexZFindTips()
 	
 end
 
+
+
 function GM:HUDPaint()
 	
-	Hexz_Paint_Tips()
+	HexZ:FindObjects()
 
 	self:PaintWorldTips()
 
