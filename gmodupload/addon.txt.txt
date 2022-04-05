@@ -1,0 +1,15 @@
+"
+
+{
+"title"     :      "GM_Hexz",
+"type"      :      "map",
+"tags"      :      [ "realism", "scenic", "hacker" ],
+"ignore"    :
+[
+"*.psd",
+"*.vcpro",
+"*.svn"
+]
+}
+
+"
